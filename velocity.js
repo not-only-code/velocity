@@ -2528,12 +2528,13 @@ return function (global, window, document, undefined) {
                             opts.container = opts.container[0] || opts.container;
                             /* Note: Unlike other properties in Velocity, the browser's scroll position is never cached since it so frequently changes
                                (due to the user's natural interaction with the page). */
-                            scrollPositionCurrent = opts.container["scroll" + scrollDirection]; /* GET */
+                            scrollPositionCurrent = parseInt(opts.container["scroll" + scrollDirection], 10); /* GET */
 
                             /* $.position() values are relative to the container's currently viewable area (without taking into account the container's true dimensions
                                -- say, for example, if the container was not overflowing). Thus, the scroll end value is the sum of the child element's position *and*
                                the scroll container's current scroll position. */
-                            scrollPositionEnd = (scrollPositionCurrent + $(element).position()[scrollDirection.toLowerCase()]) + scrollOffset; /* GET */
+                            scrollPositionEnd = parseInt((scrollPositionCurrent + $(element).position()[scrollDirection.toLowerCase()]) + scrollOffset, 10); /* GET */
+                            scrollPositionEnd = scrollOffset /* GET */
                         /* If a value other than a jQuery object or a raw DOM element was passed in, default to null so that this option is ignored. */
                         } else {
                             opts.container = null;
@@ -2541,13 +2542,14 @@ return function (global, window, document, undefined) {
                     } else {
                         /* If the window itself is being scrolled -- not a containing element -- perform a live scroll position lookup using
                            the appropriate cached property names (which differ based on browser type). */
-                        scrollPositionCurrent = Velocity.State.scrollAnchor[Velocity.State["scrollProperty" + scrollDirection]]; /* GET */
+                        scrollPositionCurrent = parseInt(Velocity.State.scrollAnchor[Velocity.State["scrollProperty" + scrollDirection]], 10); /* GET */
                         /* When scrolling the browser window, cache the alternate axis's current value since window.scrollTo() doesn't let us change only one value at a time. */
-                        scrollPositionCurrentAlternate = Velocity.State.scrollAnchor[Velocity.State["scrollProperty" + (scrollDirection === "Left" ? "Top" : "Left")]]; /* GET */
+                        scrollPositionCurrentAlternate = parseInt(Velocity.State.scrollAnchor[Velocity.State["scrollProperty" + (scrollDirection === "Left" ? "Top" : "Left")]], 10); /* GET */
 
                         /* Unlike $.position(), $.offset() values are relative to the browser window's true dimensions -- not merely its currently viewable area --
                            and therefore end values do not need to be compounded onto current values. */
-                        scrollPositionEnd = $(element).offset()[scrollDirection.toLowerCase()] + scrollOffset; /* GET */
+                        scrollPositionEnd = parseInt($(element).offset()[scrollDirection.toLowerCase()] + scrollOffset, 10); /* GET */
+                        scrollPositionEnd = scrollOffset /* GET */
                     }
 
                     /* Since there's only one format that scroll's associated tweensContainer can take, we create it manually. */
